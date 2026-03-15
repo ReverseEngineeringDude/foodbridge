@@ -298,7 +298,7 @@ class _AddDonationScreenState extends ConsumerState<AddDonationScreen> {
         20,
         16,
         20,
-        MediaQuery.of(context).padding.bottom + 16,
+        MediaQuery.of(context).padding.bottom + 32,
       ),
       decoration: BoxDecoration(
         color: _C.bg,

@@ -517,7 +517,7 @@ class _AdminManageUsersScreenState
                   })
                   .toList(),
             ),
-            SizedBox(height: MediaQuery.of(ctx).padding.bottom + 8),
+            SizedBox(height: MediaQuery.of(ctx).padding.bottom + 100),
           ],
         ),
       ),

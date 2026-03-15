@@ -218,8 +218,9 @@ class _DonationDetailScreenState extends ConsumerState<DonationDetailScreen> {
             floatingActionButton: donation.status == DonationStatus.available
                 ? FadeInUp(
                     duration: const Duration(milliseconds: 600),
-                    child: Padding(
+                    child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
+                      constraints: const BoxConstraints(maxWidth: 400),
                       child: _GlassActionButton(
                         label: 'Accept This Donation',
                         onTap: () => _handleAccept(ref, donation),

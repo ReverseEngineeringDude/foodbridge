@@ -159,6 +159,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 80), // Added padding for floating navbar
             ],
           ),
         ),
@@ -660,7 +661,7 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
         20,
         16,
         20,
-        MediaQuery.of(context).padding.bottom + 16,
+        MediaQuery.of(context).padding.bottom + 32,
       ),
       decoration: BoxDecoration(
         color: _C.bg,

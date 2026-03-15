@@ -8,15 +8,9 @@ import 'package:foodbridge/core/router/app_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(
-    const ProviderScope(
-      child: FoodBridgeApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: FoodBridgeApp()));
 }
 
 class FoodBridgeApp extends StatelessWidget {
@@ -25,7 +19,7 @@ class FoodBridgeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'FoodBridge',
+      title: 'Hope Meals',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

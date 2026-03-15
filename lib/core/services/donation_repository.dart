@@ -88,6 +88,7 @@ class DonationRepository {
   Stream<List<Donation>> streamNgoAcceptedDonations(String ngoId) {
     return _donations
         .where('acceptedByNgoId', isEqualTo: ngoId)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {

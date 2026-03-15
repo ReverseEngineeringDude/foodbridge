@@ -32,7 +32,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (user != null) {
       // User is logged in — skip onboarding and login, go to home
       try {
-        final appUser = await ref.read(userRepositoryProvider).getUser(user.uid);
+        final appUser = await ref
+            .read(userRepositoryProvider)
+            .getUser(user.uid);
         if (!mounted) return;
         if (appUser == null) {
           context.go('/home');
@@ -85,12 +87,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
-                  child: Icon(
-                    Icons.food_bank,
-                    size: 80,
-                    color: AppColors.primary,
-                  ),
+                child: Center(
+                  child: Image.asset('assets/logo.png', width: 80, height: 80),
                 ),
               ),
             ),
@@ -98,10 +96,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             FadeInUp(
               delay: const Duration(milliseconds: 500),
               child: Text(
-                'FoodBridge',
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: Colors.white,
-                    ),
+                'Hope Meals',
+                style: Theme.of(
+                  context,
+                ).textTheme.displayMedium?.copyWith(color: Colors.white),
               ),
             ),
           ],

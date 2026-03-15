@@ -13,8 +13,8 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const FoodBridgeApp());
 
-    // Verify that the splash screen shows 'FoodBridge'
-    expect(find.text('FoodBridge'), findsOneWidget);
+    // Verify that the splash screen shows 'Hope Meals'
+    expect(find.text('Hope Meals'), findsOneWidget);
 
     // Wait for the splash screen timer to finish
     await tester.pumpAndSettle(const Duration(seconds: 3));

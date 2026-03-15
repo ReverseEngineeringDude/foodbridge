@@ -82,6 +82,10 @@ class AcceptedDonationsScreen extends ConsumerWidget {
                 .watch(donationRepositoryProvider)
                 .streamNgoAcceptedDonations(userId),
             builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return _buildErrorState(snapshot.error.toString());
+              }
+
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
@@ -150,6 +154,31 @@ class AcceptedDonationsScreen extends ConsumerWidget {
           color: _C.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline_rounded, color: _C.red, size: 48),
+            const SizedBox(height: 16),
+            const Text(
+              'Oops! Something went wrong',
+              style: TextStyle(color: _C.textPrimary, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: _C.textSecondary, fontSize: 12),
+            ),
+          ],
         ),
       ),
     );
