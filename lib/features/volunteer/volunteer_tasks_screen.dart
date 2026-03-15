@@ -10,6 +10,7 @@ import 'package:foodbridge/core/services/auth_service.dart';
 import 'package:foodbridge/core/services/donation_repository.dart';
 import 'package:foodbridge/shared/models/donation.dart';
 import 'package:intl/intl.dart';
+import 'package:foodbridge/core/utils/navigation_utils.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Dark Theme Color Palette
@@ -67,41 +68,57 @@ class VolunteerTasksScreen extends ConsumerWidget {
       );
     }
 
-    return Scaffold(
-      backgroundColor: _C.bg,
-      extendBody: true,
-      appBar: AppBar(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          await handleHomeNavigation(context, ref);
+        }
+      },
+      child: Scaffold(
         backgroundColor: _C.bg,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: GestureDetector(
-          onTap: () => context.pop(),
-          child: Container(
-            margin: const EdgeInsets.only(left: 16),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: _C.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _C.border),
+        extendBody: true,
+        appBar: AppBar(
+          backgroundColor: _C.bg,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: GestureDetector(
+            onTap: () async {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                await handleHomeNavigation(context, ref);
+              }
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: _C.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _C.border),
+              ),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: _C.textPrimary,
+                size: 20,
+              ),
             ),
-            child: const Icon(
-              Icons.arrow_back_rounded,
+          ),
+          title: const Text(
+            'My Tasks',
+            style: TextStyle(
               color: _C.textPrimary,
-              size: 20,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.3,
             ),
           ),
+          centerTitle: true,
         ),
-        title: const Text(
-          'My Tasks',
-          style: TextStyle(
-            color: _C.textPrimary,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.3,
-          ),
-        ),
-        centerTitle: true,
-      ),
 
       body: StreamBuilder<List<Donation>>(
         stream: ref
@@ -193,8 +210,9 @@ class VolunteerTasksScreen extends ConsumerWidget {
           );
         },
       ),
-    );
-  }
+    ),
+  );
+}
 
   // ── UNTOUCHED FUNCTIONS ────────────────────────────────────
 

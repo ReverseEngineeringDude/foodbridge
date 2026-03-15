@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:foodbridge/core/services/auth_service.dart';
 import 'package:foodbridge/core/services/user_repository.dart';
 import 'package:foodbridge/shared/models/app_user.dart';
+import 'package:foodbridge/core/utils/navigation_utils.dart';
 
 class MainShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -27,11 +28,22 @@ class MainShell extends ConsumerWidget {
           return Scaffold(body: navigationShell);
         }
 
-        return Scaffold(
-          body: navigationShell,
-          bottomNavigationBar: _AppNavigationBar(
-            navigationShell: navigationShell,
-            role: appUser.role,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              await handleHomeNavigation(context, ref);
+            }
+          },
+          child: Scaffold(
+            body: navigationShell,
+            bottomNavigationBar: _AppNavigationBar(
+              navigationShell: navigationShell,
+              role: appUser.role,
+            ),
           ),
         );
       },

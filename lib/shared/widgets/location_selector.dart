@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:foodbridge/core/constants/app_constants.dart';
 
 /// Data model for a Kerala sub-district (taluk) with its villages.
 class _SubDistrict {
@@ -15,6 +14,21 @@ class _District {
   final String name;
   final List<_SubDistrict> subDistricts;
   _District({required this.name, required this.subDistricts});
+}
+
+// ─────────────────────────────────────────────────────────────
+// Unified Liquid Glass Palette
+// ─────────────────────────────────────────────────────────────
+class _C {
+  static const surfaceAlt = Color(0xFF252529);
+  static const border = Color(0xFF2C2C32);
+
+  static const green = Color(0xFF3DD68C);
+  static const blue = Color(0xFF5B8DEF);
+
+  static const textPrimary = Color(0xFFFFFFFF);
+  static const textSecondary = Color(0xFFAAAAAF);
+  static const textMuted = Color(0xFF555560);
 }
 
 /// Loads and parses the kerala.json asset into a list of [_District] objects.
@@ -35,8 +49,8 @@ Future<List<_District>> _loadKeralaDistricts() async {
 
 /// A reusable widget that shows hierarchical location selection:
 /// **State (Kerala) → District → Sub-district (Taluk) → Village**
-/// 
-/// The `onChanged` callback fires when all three levels (district, 
+///
+/// The `onChanged` callback fires when all three levels (district,
 /// sub-district, village) have been selected.
 class LocationSelector extends StatefulWidget {
   final String? initialDistrict;
@@ -45,7 +59,8 @@ class LocationSelector extends StatefulWidget {
 
   /// Called when all three levels of location have been selected.
   /// Parameters: (district, subDistrict, village)
-  final void Function(String district, String subDistrict, String village) onChanged;
+  final void Function(String district, String subDistrict, String village)
+  onChanged;
 
   const LocationSelector({
     super.key,
@@ -111,49 +126,64 @@ class _LocationSelectorState extends State<LocationSelector> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Text('Failed to load location data', style: TextStyle(color: Colors.red));
+          return const Text(
+            'Failed to load location data',
+            style: TextStyle(color: Colors.red),
+          );
         }
 
         final districts = snapshot.data ?? [];
 
-        final subDistricts = _selectedDistrict?.subDistricts ?? <_SubDistrict>[];
+        final subDistricts =
+            _selectedDistrict?.subDistricts ?? <_SubDistrict>[];
         final villages = _selectedSubDistrict?.villages ?? <String>[];
 
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey[200]!),
-            boxShadow: AppDesign.softShadow,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withAlpha(20),
-                      shape: BoxShape.circle,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: _C.blue.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.location_on_rounded,
+                    color: _C.blue,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Location Context',
+                      style: TextStyle(
+                        color: _C.textPrimary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        letterSpacing: -0.3,
+                      ),
                     ),
-                    child: const Icon(Icons.location_on_outlined, color: AppColors.primary, size: 18),
-                  ),
-                  const SizedBox(width: 10),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Location', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                      Text('Kerala, India', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Divider(height: 1),
-              const SizedBox(height: 16),
+                    Text(
+                      'Kerala, India',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: _C.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Container(height: 1, color: _C.border),
+            const SizedBox(height: 24),
 
               // District
               _buildDropdown<_District>(
@@ -198,7 +228,9 @@ class _LocationSelectorState extends State<LocationSelector> {
               _buildDropdown<String>(
                 label: 'Village / Area',
                 icon: Icons.home_outlined,
-                value: villages.contains(_selectedVillage) ? _selectedVillage : null,
+                value: villages.contains(_selectedVillage)
+                    ? _selectedVillage
+                    : null,
                 items: villages,
                 displayText: (v) => v,
                 hint: 'Select Village / Area',
@@ -210,30 +242,33 @@ class _LocationSelectorState extends State<LocationSelector> {
                       },
               ),
 
-              // Selected location badge
               if (_selectedDistrict != null &&
                   _selectedSubDistrict != null &&
                   _selectedVillage != null) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.secondary.withAlpha(15),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.secondary.withAlpha(40)),
+                    color: _C.green.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: _C.green.withOpacity(0.2)),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.check_circle_outline, color: AppColors.secondary, size: 16),
-                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: _C.green,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           '$_selectedVillage, ${_selectedSubDistrict!.name}, ${_selectedDistrict!.name}, Kerala',
                           style: const TextStyle(
-                            color: AppColors.secondary,
-                            fontWeight: FontWeight.w600,
+                            color: _C.green,
+                            fontWeight: FontWeight.w700,
                             fontSize: 13,
                           ),
                         ),
@@ -243,8 +278,7 @@ class _LocationSelectorState extends State<LocationSelector> {
                 ),
               ],
             ],
-          ),
-        );
+          );
       },
     );
   }
@@ -265,39 +299,56 @@ class _LocationSelectorState extends State<LocationSelector> {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: isEnabled ? AppColors.textSecondary : Colors.grey[400],
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: isEnabled ? _C.textSecondary : _C.textMuted,
+            letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         AnimatedOpacity(
-          opacity: isEnabled ? 1.0 : 0.5,
-          duration: const Duration(milliseconds: 200),
+          opacity: isEnabled ? 1.0 : 0.4,
+          duration: const Duration(milliseconds: 240),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             decoration: BoxDecoration(
-              color: isEnabled ? Colors.grey[50] : Colors.grey[100],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isEnabled ? Colors.grey[300]! : Colors.grey[200]!,
-              ),
+              color: _C.surfaceAlt,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: _C.border),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 16, color: isEnabled ? AppColors.primary : Colors.grey[400]),
-                const SizedBox(width: 8),
+                Icon(icon, size: 18, color: isEnabled ? _C.blue : _C.textMuted),
+                const SizedBox(width: 12),
                 Expanded(
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<T>(
+                      dropdownColor: _C.surfaceAlt,
+                      borderRadius: BorderRadius.circular(16),
                       isExpanded: true,
                       value: value,
-                      hint: Text(hint, style: TextStyle(color: Colors.grey[400], fontSize: 14)),
-                      icon: Icon(Icons.keyboard_arrow_down, color: isEnabled ? Colors.grey : Colors.grey[400]),
+                      hint: Text(
+                        hint,
+                        style: const TextStyle(
+                          color: _C.textMuted,
+                          fontSize: 14,
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: isEnabled ? _C.textSecondary : _C.textMuted,
+                      ),
                       items: items.map((item) {
                         return DropdownMenuItem<T>(
                           value: item,
-                          child: Text(displayText(item), style: const TextStyle(fontSize: 14)),
+                          child: Text(
+                            displayText(item),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: _C.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         );
                       }).toList(),
                       onChanged: isEnabled ? onChanged : null,

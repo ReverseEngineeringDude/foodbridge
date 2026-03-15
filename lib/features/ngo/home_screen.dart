@@ -485,7 +485,7 @@ class _NGOHomeScreenState extends ConsumerState<NGOHomeScreen> {
             child: Column(
               children: const [
                 Icon(Icons.inbox_outlined, color: _C.textMuted, size: 40),
-                SizedBox(height: 12),
+                SizedBox(height: 12, width: double.infinity),
                 Text(
                   'No accepted donations yet.',
                   style: TextStyle(

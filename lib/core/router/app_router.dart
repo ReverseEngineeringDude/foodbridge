@@ -92,6 +92,10 @@ final goRouter = GoRouter(
               path: '/admin-users',
               builder: (context, state) => const AdminManageUsersScreen(),
             ),
+            GoRoute(
+              path: '/donate',
+              builder: (context, state) => const AddDonationScreen(),
+            ),
           ],
         ),
         // Branch 2: Status/History
@@ -113,6 +117,10 @@ final goRouter = GoRouter(
               path: '/admin-reports',
               builder: (context, state) => const AdminSystemReportsScreen(),
             ),
+            GoRoute(
+              path: '/active-task',
+              builder: (context, state) => const ActiveTaskScreen(),
+            ),
           ],
         ),
         // Branch 3: Profile
@@ -127,15 +135,6 @@ final goRouter = GoRouter(
       ],
     ),
 
-    // Action Screens (Moved to root for full-screen rendering)
-    GoRoute(
-      path: '/donate',
-      builder: (context, state) => const AddDonationScreen(),
-    ),
-    GoRoute(
-      path: '/active-task',
-      builder: (context, state) => const ActiveTaskScreen(),
-    ),
 
     // Global sub-pages
     GoRoute(

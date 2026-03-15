@@ -6,6 +6,7 @@ import 'package:foodbridge/core/services/user_repository.dart';
 import 'package:foodbridge/core/services/donation_repository.dart';
 import 'package:foodbridge/shared/models/app_user.dart';
 import 'package:foodbridge/shared/models/donation.dart';
+import 'package:foodbridge/core/utils/navigation_utils.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Color Palette
@@ -38,58 +39,75 @@ class AdminSystemReportsScreen extends ConsumerWidget {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: _C.bg,
-      appBar: AppBar(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        } else {
+          await handleHomeNavigation(context, ref);
+        }
+      },
+      child: Scaffold(
         backgroundColor: _C.bg,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            margin: const EdgeInsets.only(left: 16),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: _C.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _C.border),
+        appBar: AppBar(
+          backgroundColor: _C.bg,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: GestureDetector(
+            onTap: () async {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                await handleHomeNavigation(context, ref);
+              }
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: _C.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _C.border),
+              ),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: _C.textPrimary,
+                size: 20,
+              ),
             ),
-            child: const Icon(
-              Icons.arrow_back_rounded,
+          ),
+          title: const Text(
+            'System Reports',
+            style: TextStyle(
               color: _C.textPrimary,
-              size: 20,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.3,
             ),
           ),
+          centerTitle: true,
         ),
-        title: const Text(
-          'System Reports',
-          style: TextStyle(
-            color: _C.textPrimary,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.3,
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionHeader('Donation Overview'),
+              const SizedBox(height: 14),
+              _buildDonationStats(ref),
+              const SizedBox(height: 28),
+              _buildSectionHeader('User Breakdown'),
+              const SizedBox(height: 14),
+              _buildUserStats(ref),
+              const SizedBox(height: 28),
+              _buildSectionHeader('Impact Metrics'),
+              const SizedBox(height: 14),
+              _buildImpactStats(ref),
+            ],
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionHeader('Donation Overview'),
-            const SizedBox(height: 14),
-            _buildDonationStats(ref),
-            const SizedBox(height: 28),
-            _buildSectionHeader('User Breakdown'),
-            const SizedBox(height: 14),
-            _buildUserStats(ref),
-            const SizedBox(height: 28),
-            _buildSectionHeader('Impact Metrics'),
-            const SizedBox(height: 14),
-            _buildImpactStats(ref),
-          ],
         ),
       ),
     );

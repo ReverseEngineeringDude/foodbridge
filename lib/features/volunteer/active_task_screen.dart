@@ -17,7 +17,6 @@ import 'package:foodbridge/core/utils/navigation_utils.dart';
 class _C {
   static const bg = Color(0xFF141416);
   static const surface = Color(0xFF1E1E22);
-  static const surfaceAlt = Color(0xFF252529);
   static const border = Color(0xFF2C2C32);
 
   static const pink = Color(0xFFE040A0);
@@ -256,40 +255,51 @@ class _ActiveTaskScreenState extends ConsumerState<ActiveTaskScreen> {
           });
         }
 
-        return Scaffold(
-          backgroundColor: _C.bg,
-          body: Column(
-            children: [
-              _buildAppBar(context),
-              Expanded(
-                child: SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 12),
-                        _buildRouteOverview(task),
-                        const SizedBox(height: 24),
-                        _buildStepIndicator(),
-                        const SizedBox(height: 32),
-                        const _SectionLabel('Delivery Timeline'),
-                        const SizedBox(height: 16),
-                        _buildTimeline(),
-                        const SizedBox(height: 32),
-                        const _SectionLabel('Quick Contact'),
-                        const SizedBox(height: 16),
-                        _buildContactBar(),
-                        const SizedBox(height: 100),
-                      ],
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              await handleHomeNavigation(context, ref);
+            }
+          },
+          child: Scaffold(
+            backgroundColor: _C.bg,
+            body: Column(
+              children: [
+                _buildAppBar(context),
+                Expanded(
+                  child: SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 12),
+                          _buildRouteOverview(task),
+                          const SizedBox(height: 24),
+                          _buildStepIndicator(),
+                          const SizedBox(height: 32),
+                          const _SectionLabel('Delivery Timeline'),
+                          const SizedBox(height: 16),
+                          _buildTimeline(),
+                          const SizedBox(height: 32),
+                          const _SectionLabel('Quick Contact'),
+                          const SizedBox(height: 16),
+                          _buildContactBar(),
+                          const SizedBox(height: 100),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              _buildBottomAction(task),
-            ],
+                _buildBottomAction(task),
+              ],
+            ),
           ),
         );
       },

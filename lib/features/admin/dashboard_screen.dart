@@ -10,6 +10,7 @@ import 'package:foodbridge/core/services/auth_service.dart';
 import 'package:foodbridge/shared/models/app_user.dart';
 import 'package:foodbridge/shared/models/donation.dart';
 import 'package:intl/intl.dart';
+import 'package:foodbridge/core/utils/navigation_utils.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Color Palette
@@ -47,26 +48,37 @@ class AdminDashboardScreen extends ConsumerWidget {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: _C.bg,
-      appBar: _buildAppBar(context, ref),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildStatsGrid(ref),
-            const SizedBox(height: 32),
-            _buildSectionHeader('Management'),
-            const SizedBox(height: 16),
-            _buildManagementGrid(context),
-            const SizedBox(height: 32),
-            _buildSectionHeader('NGO Approvals'),
-            const SizedBox(height: 16),
-            _buildPendingNGOsList(context, ref),
-            const SizedBox(height: 20),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          await handleHomeNavigation(context, ref);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: _C.bg,
+        appBar: _buildAppBar(context, ref),
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildStatsGrid(ref),
+              const SizedBox(height: 32),
+              _buildSectionHeader('Management'),
+              const SizedBox(height: 16),
+              _buildManagementGrid(context),
+              const SizedBox(height: 32),
+              _buildSectionHeader('NGO Approvals'),
+              const SizedBox(height: 16),
+              _buildPendingNGOsList(context, ref),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
@@ -405,7 +417,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                   color: _C.green,
                   size: 36,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 10, width: double.infinity),
                 Text(
                   'No pending NGO approvals.',
                   style: TextStyle(

@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:foodbridge/core/services/auth_service.dart';
 import 'package:foodbridge/core/services/donation_repository.dart';
 import 'package:foodbridge/shared/models/donation.dart';
+import 'package:foodbridge/core/utils/navigation_utils.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Color Palette
@@ -44,7 +45,6 @@ class _C {
 // Donor Home Screen
 // ─────────────────────────────────────────────────────────────
 
-
 class DonorHomeScreen extends ConsumerStatefulWidget {
   const DonorHomeScreen({super.key});
   @override
@@ -61,29 +61,40 @@ class _DonorHomeScreenState extends ConsumerState<DonorHomeScreen> {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: _C.bg,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              _Header(),
-              const SizedBox(height: 28),
-              _ImpactBanner(),
-              const SizedBox(height: 24),
-              _DonorStatsRow(),
-              const SizedBox(height: 32),
-              _DonateCTA(),
-              const SizedBox(height: 32),
-              const _SectionLabel('Recent Donations'),
-              const SizedBox(height: 16),
-              _RecentDonationsList(),
-              const SizedBox(height: 120),
-            ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          await handleHomeNavigation(context, ref);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: _C.bg,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                _Header(),
+                const SizedBox(height: 28),
+                _ImpactBanner(),
+                const SizedBox(height: 24),
+                _DonorStatsRow(),
+                const SizedBox(height: 32),
+                _DonateCTA(),
+                const SizedBox(height: 32),
+                const _SectionLabel('Recent Donations'),
+                const SizedBox(height: 16),
+                _RecentDonationsList(),
+                const SizedBox(height: 120),
+              ],
+            ),
           ),
         ),
       ),
@@ -151,17 +162,20 @@ class _Header extends ConsumerWidget {
             ],
           ),
           const Spacer(),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: _C.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _C.border),
-            ),
-            child: const Icon(
-              Icons.notifications_none_rounded,
-              color: _C.textSecondary,
-              size: 20,
+          GestureDetector(
+            onTap: () => context.push('/notifications'),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: _C.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _C.border),
+              ),
+              child: const Icon(
+                Icons.notifications_none_rounded,
+                color: _C.textSecondary,
+                size: 20,
+              ),
             ),
           ),
         ],
@@ -333,7 +347,7 @@ class _DonateCTA extends StatelessWidget {
     return FadeInUp(
       delay: const Duration(milliseconds: 200),
       child: GestureDetector(
-        onTap: () => context.push('/donate'),
+        onTap: () => context.go('/donate'),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -704,4 +718,3 @@ class _EmptyDonationsPlaceholder extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────
 // Liquid Glass Bottom Nav
 // ─────────────────────────────────────────────────────────────
-

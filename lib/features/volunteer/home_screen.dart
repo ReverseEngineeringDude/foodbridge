@@ -10,6 +10,7 @@ import 'package:foodbridge/core/services/auth_service.dart';
 import 'package:foodbridge/core/services/donation_repository.dart';
 import 'package:foodbridge/core/services/user_repository.dart';
 import 'package:foodbridge/shared/models/donation.dart';
+import 'package:foodbridge/core/utils/navigation_utils.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Dark Theme Color Palette
@@ -58,29 +59,40 @@ class VolunteerHomeScreen extends ConsumerWidget {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: _C.bg,
-      // extendBody lets the scroll content flow UNDER the nav bar
-      extendBody: true,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              _Header(),
-              const SizedBox(height: 28),
-              _ActiveTaskCard(),
-              const SizedBox(height: 24),
-              _StatsBanner(),
-              const SizedBox(height: 32),
-              const _SectionLabel('Available Deliveries'),
-              const SizedBox(height: 16),
-              _AvailableTasksList(),
-              const SizedBox(height: 120),
-            ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          await handleHomeNavigation(context, ref);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: _C.bg,
+        // extendBody lets the scroll content flow UNDER the nav bar
+        extendBody: true,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                _Header(),
+                const SizedBox(height: 28),
+                _ActiveTaskCard(),
+                const SizedBox(height: 24),
+                _StatsBanner(),
+                const SizedBox(height: 32),
+                const _SectionLabel('Available Deliveries'),
+                const SizedBox(height: 16),
+                _AvailableTasksList(),
+                const SizedBox(height: 120),
+              ],
+            ),
           ),
         ),
       ),
@@ -202,7 +214,7 @@ class _ActiveTaskCard extends ConsumerWidget {
         return FadeInRight(
           duration: const Duration(milliseconds: 500),
           child: GestureDetector(
-            onTap: () => context.push('/active-task'),
+            onTap: () => context.go('/active-task'),
             child: Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
@@ -529,6 +541,7 @@ class _AvailableTasksList extends ConsumerWidget {
 
         if (tasks.isEmpty) {
           return Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: _C.surface,
@@ -676,7 +689,7 @@ class _TaskCard extends ConsumerWidget {
                     task.id,
                     {'assignedVolunteerId': user.uid},
                   );
-                  if (context.mounted) context.push('/active-task');
+                  if (context.mounted) context.go('/active-task');
                 }
               },
               child: Container(
